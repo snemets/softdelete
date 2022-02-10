@@ -18,4 +18,16 @@
   <changeSet author="Sergey_Nemets" id="002">
     <createSequence sequenceName="person_sequence" cacheSize="1" startValue="1"/>
   </changeSet>
+
+  <changeSet id="003" author="Sergey_Nemets">
+    <createTable tableName="action">
+      <column name="id" type="bigint">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="action_pk"/>
+      </column>
+      <column name="person_id" type="bigint">
+        <constraints nullable="false" foreignKeyName="action_person_fk" referencedTableName="person" referencedColumnNames="id"/>
+      </column>
+      <column name="name" type="varchar(200)"/>
+    </createTable>
+  </changeSet>
 </databaseChangeLog>
