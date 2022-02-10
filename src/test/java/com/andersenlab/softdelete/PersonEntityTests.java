@@ -25,22 +25,22 @@ class PersonEntityTests {
     void deleteAndGetAll() {
         assertEquals(1L, personRepository.count());
 
-        personRepository.deleteById(1L);
+        personRepository.deleteById(1L);                                                //Now deleteById do what we declared in @SqlDelete. [I'm the master of Hibernate!!!]
 
-        assertEquals(0L, personRepository.count());
-        assertEquals(0L, personRepository.findAll().size());
+        assertEquals(0L, personRepository.count());                             // regular queries can not see deleted entity row
+        assertEquals(0L, personRepository.findAll().size());                    // regular queries can not see deleted entity row
 
-        assertEquals(1L, personRepository.findAllDeleted().size());
+        assertEquals(1L, personRepository.findAllDeleted().size());             // native queries are the way to skip @Where condition :)
 
         assertEquals(1L, actionRepository.count());
+
         assertTrue(actionRepository.findByIdEager(1L).isPresent());
-        assertTrue(actionRepository.findByIdEager(1L).get().getPerson().isDeleted());
+        assertTrue(actionRepository.findByIdEager(1L).get().getPerson().isDeleted());   //However, dependent entities could fetch the entity marked as deleted with eager...
 
         assertTrue(actionRepository.findById(1L).isPresent());
-        assertTrue(actionRepository.findById(1L).get().getPerson().isDeleted());
+        assertTrue(actionRepository.findById(1L).get().getPerson().isDeleted());        //... or lazy fetch
 
-
-        assertEquals(0L, personRepository.findAllDeleted2().size());
+        assertEquals(0L, personRepository.findAllDeleted2().size());            //The ugliest query condition : where ( person0_.is_deleted = false) and person0_.is_deleted=true
     }
 
 }
